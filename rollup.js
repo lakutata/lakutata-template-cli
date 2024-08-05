@@ -4,11 +4,49 @@ const {glob} = require('glob')
 const resolve = require('@rollup/plugin-node-resolve')
 const json = require('@rollup/plugin-json')
 const copy = require('rollup-plugin-copy')
-const {mkdir, writeFile} = require('node:fs/promises')
+const {mkdir, writeFile, readdir} = require('node:fs/promises')
+const {statSync} = require('node:fs')
+const {IsExists} = require('lakutata/helper')
 const normalizeString = (str) => Buffer.from(str).filter((v, i) => i ? true : v !== 0).toString()
+const packagesDir = normalizeString(path.resolve(process.cwd(), './packages'))
+const outNodeModulesDir = normalizeString(path.resolve(process.cwd(), './node_modules'))
 const currentWorkingDir = normalizeString(path.resolve(process.cwd(), './packages/app/build'))
 const outputDirname = 'build'
+
+async function getDependencies(nodeModulesDir, packageJsonFilename, gotDependencies = []) {
+    let dependencies = []
+    if (!(await IsExists(packageJsonFilename))) return dependencies
+    const packageJson = require(packageJsonFilename)
+    if (gotDependencies.includes(packageJson.name)) return dependencies
+    gotDependencies.push(packageJson.name)
+    let totalSubDependencies = []
+    if (packageJson.dependencies && Object.keys(packageJson.dependencies).length) {
+        dependencies = Object.keys(packageJson.dependencies)
+        for (const dependency of dependencies) {
+            const subDevDependencies = await getDependencies(nodeModulesDir, path.resolve(nodeModulesDir, dependency, 'package.json'), gotDependencies)
+            totalSubDependencies = [...totalSubDependencies, ...subDevDependencies]
+        }
+    }
+    return [...dependencies, ...totalSubDependencies]
+}
+
 setImmediate(async () => {
+    const packages = await readdir(packagesDir)
+    const items = await readdir(outNodeModulesDir)
+    const dependencies = new Set()
+    const packageJsonFilenames = packages.map(packageName => path.resolve(packagesDir, packageName, 'package.json'))
+    packageJsonFilenames.push(normalizeString(path.resolve(process.cwd(), './package.json')))
+    for (const packageJsonFilename of packageJsonFilenames) {
+        const packageDependencies = await getDependencies(outNodeModulesDir, packageJsonFilename)
+        packageDependencies.forEach(packageDependency => dependencies.add(packageDependency))
+    }
+    const nodeModuleNames = items.filter(item =>
+        !packages.includes(item)
+        && !item.startsWith('.')
+        && statSync(path.resolve(outNodeModulesDir, item)).isDirectory()
+        && dependencies.has(item)
+    )
+
     const jsBundle = await rollup({
         logLevel: 'warn',
         onwarn: function (warning, handler) {
@@ -36,7 +74,9 @@ setImmediate(async () => {
                     },
                     {src: 'scripts', dest: outputDirname},
                     {src: 'packages/*', dest: path.resolve(outputDirname, 'node_modules')},
-                    {src: 'node_modules/electron', dest: path.resolve(outputDirname, 'node_modules')}
+                    ...nodeModuleNames.map(item => {
+                        return {src: `node_modules/${item}`, dest: path.resolve(outputDirname, 'node_modules')}
+                    })
                 ]
             })
         ]
