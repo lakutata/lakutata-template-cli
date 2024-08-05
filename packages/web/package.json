@@ -1,0 +1,27 @@
+{
+  "name": "web",
+  "version": "0.0.1",
+  "description": "{$APP_DESC}",
+  "author": "{$APP_AUTHOR} <{$APP_AUTHOR}@email.com>",
+  "license": "{$APP_LICENSE}",
+  "scripts": {
+    "dev:web": "vite -c vite/web.mts",
+    "build:web": "vite build -c vite/web.mts",
+    "serve": "http-server ./dist/web -c-1",
+    "test": "ts-node test/test.ts"
+  },
+  "devDependencies": {
+    "@emotion/react": "^11.11.1",
+    "@types/react": "^18.2.79",
+    "@types/react-dom": "^18.2.25",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.3",
+    "react-simple-keyboard": "^3.7.124",
+    "react-transition-group": "^4.4.5",
+    "ts-node": "^10.9.2",
+    "vite": "^5.2.8"
+  },
+  "dependencies": {
+  }
+}

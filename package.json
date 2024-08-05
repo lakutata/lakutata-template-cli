@@ -7,7 +7,7 @@
   "scripts": {
     "clean": "shx rm -rf ./build && shx rm -rf ./dist",
     "rollup": "npm run clean && node ./rollup.js",
-    "build:packages": "lerna run rebuild && lerna run build:renderer",
+    "build:packages": "lerna run rebuild && lerna run build:web",
     "build:host": "npm run build:packages && npm run rollup && node ./builder",
     "build:cross": "lerna version patch --no-git-tag-version --no-push -y && npm run clean && node ./cross --platform linux/arm64"
   },

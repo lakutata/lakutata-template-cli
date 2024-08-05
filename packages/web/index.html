@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" style="font-size: 14px;">
+<head>
+    <meta charset="UTF-8">
+    <title>APP</title>
+    <link rel="shortcut icon" href="/logo.png">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+<div id="app"></div>
+<script>
+    (function () {
+        var userAgent = navigator.userAgent
+        if (/Opera/.test(userAgent) || /Trident/.test(userAgent)) {
+            document.getElementById('app').innerHTML = '<h1>浏览器版本过低，请使用除IE外的现代浏览器上网</h1>'
+        }
+    })()
+</script>
+<script type="module" src="/src/main.tsx"></script>
+</body>
+</html>
