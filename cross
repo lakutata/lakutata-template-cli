@@ -1,0 +1,61 @@
+#!/usr/bin/env node
+
+const {Application} = require('lakutata')
+const {Docker} = require('lakutata/com/docker')
+const {program} = require('commander')
+const {Glob} = require('lakutata/helper')
+const {mkdir} = require('node:fs/promises')
+const {existsSync} = require('node:fs')
+const path = require('path')
+const {createInterface} = require('node:readline')
+Application.run(() => ({
+    id: 'cross.builder.tool',
+    name: 'Cross Builder Tool',
+    components: {
+        docker: {
+            class: Docker
+        }
+    },
+    bootstrap: [async (app) => {
+        program
+            .option('-p, --platform <platform>', 'target platform')
+            .action(async (options) => {
+                /**
+                 * @type {Docker}
+                 */
+                const docker = await app.getObject('docker')
+                const files = await Glob('**/*')
+                if (existsSync(path.resolve(__dirname, '.npmrc'))) files.push('.npmrc')
+                try {
+                    const image = await docker.buildImage({
+                        files: files,
+                        workdir: __dirname,
+                        dockerfile: 'Dockerfile',
+                        platform: options.platform,
+                        outputCallback: output => output.stream && output.stream.trim() ? console.log(output.stream.trim()) : undefined
+                    })
+                    const distPath = path.resolve(__dirname, 'dist')
+                    await mkdir(distPath, {recursive: true})
+                    const container = await image.run({
+                        binds: [{
+                            containerPath: '/data',
+                            hostPath: distPath,
+                            rw: true
+                        }]
+                    })
+                    const logStream = await container.logs({follow: true})
+                    await new Promise((resolve, reject) => {
+                        createInterface({input: logStream}).on('line', line => console.log(line.toString().trim()))
+                        logStream
+                            .once('close', resolve)
+                            .once('error', reject)
+                    })
+                    await container.remove({force: true})
+                    await image.remove({force: true})
+                } catch (e) {
+                    await docker.prune({images: true, containers: true})
+                    console.error('error:', e.message)
+                }
+            }).parse()
+    }]
+}))

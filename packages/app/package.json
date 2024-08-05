@@ -1,0 +1,26 @@
+{
+  "name": "app",
+  "version": "0.0.1",
+  "description": "{$APP_DESC}",
+  "appId": "{$APP_ID}",
+  "appName": "{$APP_NAME}",
+  "author": "{$APP_AUTHOR} <{$APP_AUTHOR}@email.com>",
+  "homepage": "NONE",
+  "license": "{$APP_LICENSE}",
+  "main": "build/App.js",
+  "scripts": {
+    "clean": "shx rm -rf ./build",
+    "build": "tsc",
+    "rebuild": "npm run clean && npm run build",
+    "test": "npm run rebuild && node ./build/tests/App.spec.js"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "electron-builder": "^24.13.3",
+    "eslint": "^8.56.0",
+    "reflect-metadata": "^0.2.2"
+  },
+  "dependencies": {
+  }
+}

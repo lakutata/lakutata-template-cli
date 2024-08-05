@@ -1,0 +1,31 @@
+{
+  "name": "root",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "clean": "shx rm -rf ./build && shx rm -rf ./dist",
+    "rollup": "npm run clean && node ./rollup.js",
+    "build:packages": "lerna run rebuild && lerna run build:renderer",
+    "build:host": "npm run build:packages && npm run rollup && node ./builder",
+    "build:cross": "lerna version patch --no-git-tag-version --no-push -y && npm run clean && node ./cross --platform linux/arm64"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^3.6.0",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@types/node": "^20.12.7",
+    "commander": "^12.0.0",
+    "glob": "^10.3.12",
+    "lerna": "^8.1.2",
+    "rollup": "^4.14.3",
+    "rollup-plugin-copy": "^3.5.0",
+    "shx": "^0.3.4",
+    "tslib": "^2.6.2",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "lakutata": "^2.0.11"
+  }
+}
