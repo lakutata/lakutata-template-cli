@@ -1,6 +1,6 @@
 {
   "name": "web",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "{$APP_DESC}",
   "author": "{$APP_AUTHOR} <{$APP_AUTHOR}@email.com>",
   "license": "{$APP_LICENSE}",
@@ -22,7 +22,5 @@
     "react-transition-group": "^4.4.5",
     "ts-node": "^10.9.2",
     "vite": "^5.2.8"
-  },
-  "dependencies": {
   }
 }
