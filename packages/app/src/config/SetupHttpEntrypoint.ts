@@ -43,7 +43,6 @@ export function SetupHttpEntrypoint(port: number): HTTPEntrypoint {
         await new Promise<void>((resolve, reject) => {
             try {
                 httpServer.listen(port, '0.0.0.0', () => {
-                    //HTTP server is listening on port 8080
                     log.info('HTTP server is listening on port %s', port)
                     return resolve()
                 })
