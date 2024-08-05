@@ -19,6 +19,7 @@
     "commander": "^12.0.0",
     "glob": "^10.3.12",
     "lerna": "^8.1.2",
+    "nexe": "^4.0.0-rc.6",
     "rollup": "^4.14.3",
     "rollup-plugin-copy": "^3.5.0",
     "shx": "^0.3.4",
