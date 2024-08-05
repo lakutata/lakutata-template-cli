@@ -42,4 +42,5 @@ WORKDIR /project
 COPY . /project/
 RUN rm -rf /project/build
 RUN npm ci --no-warnings
-CMD ["sh", "-c", "cd /project/ && USE_SYSTEM_FPM=true npm run build:host && cp -r build/dist/* /data/"]
+#CMD ["sh", "-c", "cd /project/ && USE_SYSTEM_FPM=true npm run build:host && cp -r build/dist/* /data/"]
+CMD ["sh", "-c", "cd /project/ && USE_SYSTEM_FPM=true npm run build:host && cp -r build /data/"]
