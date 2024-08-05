@@ -1,6 +1,6 @@
 {
   "name": "app",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "{$APP_DESC}",
   "appId": "{$APP_ID}",
   "appName": "{$APP_NAME}",
@@ -26,6 +26,6 @@
   "dependencies": {
     "express": "^4.19.2",
     "sqlite3": "^5.1.7",
-    "web": "^0.0.6"
+    "web": "^0.0.7"
   }
 }
