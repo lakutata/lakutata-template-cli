@@ -14,7 +14,9 @@ export async function Config(): Promise<ApplicationOptions> {
         mode: <'development' | 'production'>process.env.MODE,
         components: {
             entrypoint: BuildEntrypoints({
-                controllers: [ExampleController],
+                controllers: [
+                    ExampleController
+                ],
                 service: SetupServiceEntrypoint(),
                 http: SetupHttpEntrypoint(process.env.MODE === 'production' ? 80 : 8080)
             })

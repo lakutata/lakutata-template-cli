@@ -2,12 +2,15 @@ import {Config} from './config/Config'
 import {Application} from 'lakutata'
 import {Logger} from 'lakutata/com/logger'
 import {DevNull} from 'lakutata/helper'
+import path from 'node:path'
 
 Application
     .env({
         MODE: 'production'
     })
-    .alias({})
+    .alias({
+        '@webroot': path.resolve(require('web').default, './dist')
+    })
     .run(Config)
     .onLaunched((app: Application, logger: Logger): void => logger.info('The application %s has successfully started in %s mode.', app.appName, app.mode()))
     .onFatalException((error: Error, logger: Logger): void => logger.error('A fatal error occurred in the program: %s', error.message))

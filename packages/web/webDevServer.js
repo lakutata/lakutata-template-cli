@@ -3,7 +3,7 @@ exports.createServer = async function () {
     const path = require('path')
     const {createServer} = require('vite')
     const server = await createServer({
-        configFile: path.resolve(__dirname,'./vite/renderer.mts'),
+        configFile: path.resolve(__dirname,'./vite/web.mts'),
         root: __dirname,
         server: {
             port: 5188

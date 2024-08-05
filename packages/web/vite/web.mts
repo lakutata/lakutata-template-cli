@@ -8,7 +8,7 @@ export default mergeConfig(commonConfig, defineConfig({
         SERVER_ENV: JSON.stringify('renderer')
     },
     build: {
-        outDir: join(__dirname, '../dist/web'),
+        outDir: join(__dirname, '../dist'),
         emptyOutDir: true
     },
     server: {

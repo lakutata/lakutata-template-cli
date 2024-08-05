@@ -4,6 +4,7 @@
   "description": "{$APP_DESC}",
   "author": "{$APP_AUTHOR} <{$APP_AUTHOR}@email.com>",
   "license": "{$APP_LICENSE}",
+  "main": "web.js",
   "scripts": {
     "dev:web": "vite -c vite/web.mts",
     "build:web": "vite build -c vite/web.mts",
