@@ -28,6 +28,10 @@ RUN apt-get install -y libdbus-1-dev  \
     libnghttp2-dev  \
     libtool  \
     tcpdump  \
+    python3  \
+    g++  \
+    make  \
+    python3-pip \
     ruby-full
 RUN gem sources --add https://mirrors.tuna.tsinghua.edu.cn/rubygems/ --remove https://rubygems.org/
 RUN gem install dotenv -v 2.8.1
