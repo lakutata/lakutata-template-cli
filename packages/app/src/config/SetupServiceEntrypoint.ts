@@ -8,10 +8,10 @@ import {Module} from 'lakutata'
 import {DevNull} from 'lakutata/helper'
 
 /**
- * Setup entrypoints
+ * Setup service entrypoint
  * @constructor
  */
-export function SetupServiceEntrypoint(devPort?: number): ServiceEntrypoint {
+export function SetupServiceEntrypoint(): ServiceEntrypoint {
     return BuildServiceEntrypoint(async (module: Module, handler: ServiceEntrypointHandler, registerDestroy: EntrypointDestroyerRegistrar): Promise<void> => {
         //TODO
         registerDestroy(async (): Promise<void> => {
