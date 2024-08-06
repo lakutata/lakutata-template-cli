@@ -41,7 +41,5 @@ RUN mkdir -p /project
 WORKDIR /project
 COPY . /project/
 RUN rm -rf /project/build
-RUN npm i nexe -g
 RUN npm ci --no-warnings
-RUN echo $(which python3)
 CMD ["sh", "-c", "cd /project/ && USE_SYSTEM_FPM=true npm run build:host && cp -r build/dist/* /data/"]
