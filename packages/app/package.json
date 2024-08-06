@@ -1,6 +1,6 @@
 {
   "name": "app",
-  "version": "0.0.8",
+  "version": "0.0.1",
   "description": "{$APP_DESC}",
   "appId": "{$APP_ID}",
   "appName": "{$APP_NAME}",

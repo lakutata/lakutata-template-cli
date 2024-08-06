@@ -6,9 +6,7 @@ const {compile} = require('nexe')
 const packageJson = require('app/package.json')
 const {Glob, IsExists} = require('lakutata/helper')
 const {cp, mkdir} = require('node:fs/promises')
-const {execa} = require('execa')
-
-console.log(execa('which python3'))
+const execa = require('execa')
 
 async function copyModule(oldNodeModulesDir, newNodeModulesDir, moduleName) {
     if (!(await IsExists(newNodeModulesDir))) await mkdir(newNodeModulesDir, {recursive: true})
@@ -23,6 +21,8 @@ setImmediate(async () => {
     const inputFilename = path.resolve(projectDir, './app/App.js')
     const projectNodeModulesDir = path.resolve(projectDir, 'node_modules')
     const unpackPackageDir = path.resolve(projectDir, './dist/unpack-package')
+    const {stdout} = await execa('which', ['python3'])
+    const pythonBinPath = stdout ? stdout : undefined
     await compile({
         cwd: projectDir,
         input: inputFilename,
@@ -45,8 +45,8 @@ setImmediate(async () => {
             'node_modules/**/*.wasm',
             'node_modules/**/*.data'
         ],
-        verbose: true
-        // python: '/usr/bin/python3'
+        verbose: true,
+        python: pythonBinPath
     })
     const nativeAddons = await Glob(path.resolve(projectNodeModulesDir, '**/*.node'))
     const nativeAddonModuleNames = nativeAddons.map(nativeAddon => {
