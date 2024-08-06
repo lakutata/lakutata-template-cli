@@ -9,7 +9,8 @@ import {BuildDatabaseOptions, Database} from 'lakutata/com/database'
 import path from 'node:path'
 import {tmpdir} from 'node:os'
 import {Example} from '../entities/Example'
-import { Repository } from 'lakutata/orm'
+import {Repository} from 'lakutata/orm'
+import {Logger} from 'lakutata/com/logger'
 
 export async function Config(): Promise<ApplicationOptions> {
     return {
@@ -40,11 +41,12 @@ export async function Config(): Promise<ApplicationOptions> {
             'entrypoint',
             'db',
             async (app): Promise<void> => {
+                const log: Logger = await app.getObject('log')
                 const db: Database = await app.getObject('db')
-                const exampleRepo:Repository<Example> = db.getRepository(Example)
-                const example=new Example()
-                example.timestamp=Time.now()
-                console.log(await exampleRepo.save(example))
+                const exampleRepo: Repository<Example> = db.getRepository(Example)
+                const example = new Example()
+                example.timestamp = Time.now()
+                log.info(await exampleRepo.save(example))
             }
         ]
     }
