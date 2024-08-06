@@ -6,6 +6,7 @@ const {program} = require('commander')
 const {Glob, MD5} = require('lakutata/helper')
 const {mkdir} = require('node:fs/promises')
 const {existsSync} = require('node:fs')
+const {homedir} = require('os')
 const path = require('path')
 const {createInterface} = require('node:readline')
 Application.run(() => ({
@@ -35,7 +36,7 @@ Application.run(() => ({
                         outputCallback: output => output.stream && output.stream.trim() ? console.log(output.stream.trim()) : undefined
                     })
                     const distPath = path.resolve(__dirname, 'dist')
-                    const cachePath = path.resolve(__dirname, `node_modules/.cache/nexe_cross_${MD5(options.platform).toString('hex')}`)
+                    const cachePath = path.resolve(homedir(), `.nexe-lakutata-cross/${MD5(options.platform).toString('hex')}`)
                     await mkdir(distPath, {recursive: true})
                     await mkdir(cachePath, {recursive: true})
                     const container = await image.run({
