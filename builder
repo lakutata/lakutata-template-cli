@@ -6,6 +6,9 @@ const {compile} = require('nexe')
 const packageJson = require('app/package.json')
 const {Glob, IsExists} = require('lakutata/helper')
 const {cp, mkdir} = require('node:fs/promises')
+const {execa} = require('execa')
+
+console.log(execa('which python3'))
 
 async function copyModule(oldNodeModulesDir, newNodeModulesDir, moduleName) {
     if (!(await IsExists(newNodeModulesDir))) await mkdir(newNodeModulesDir, {recursive: true})
@@ -43,6 +46,7 @@ setImmediate(async () => {
             'node_modules/**/*.data'
         ],
         verbose: true
+        // python: '/usr/bin/python3'
     })
     const nativeAddons = await Glob(path.resolve(projectNodeModulesDir, '**/*.node'))
     const nativeAddonModuleNames = nativeAddons.map(nativeAddon => {
