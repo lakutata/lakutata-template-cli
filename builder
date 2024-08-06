@@ -3,7 +3,6 @@
 const os = require('os')
 const path = require('path')
 const {compile} = require('nexe')
-const packageJson = require('app/package.json')
 const {Glob, IsExists} = require('lakutata/helper')
 const {finished} = require('node:stream/promises')
 const {createWriteStream} = require('node:fs')
@@ -114,37 +113,56 @@ async function copyModule(oldNodeModulesDir, newNodeModulesDir, moduleName) {
 setImmediate(async () => {
     const packageJson = require('./packages/app/package.json')
     const projectDir = path.resolve(__dirname, './build')
-    const inputFilename = path.resolve(projectDir, './app/App.js')
+    const daemonInputFilename = path.resolve(projectDir, './app/App.js')
+    const daemonOutputFilename = path.resolve(projectDir, './dist/unpack-package', `${packageJson.appName}-daemon`)
+    const cliInputFilename = path.resolve(projectDir, './node_modules/cli/build/CLIApp.js')
+    const cliOutputFilename = path.resolve(projectDir, './dist/unpack-package', packageJson.appName)
     const projectNodeModulesDir = path.resolve(projectDir, 'node_modules')
     const projectDistDir = path.resolve(projectDir, './dist')
     const unpackPackageDir = path.resolve(projectDistDir, './unpack-package')
     const {stdout} = await execa('which', ['python3'])
     const pythonBinPath = stdout ? stdout : undefined
+    const resources = [
+        'package.json',
+        'app/**/*',
+        'node_modules/**/*',
+        '!node_modules/**/*.node',
+        'node_modules/*.js',
+        'node_modules/*.cjs',
+        'node_modules/*.mjs',
+        'node_modules/**/*.json',
+        'node_modules/**/*.js',
+        'node_modules/**/*.wasm',
+        'node_modules/**/*.data'
+    ]
+    const makeArgs = [`-j${os.cpus().length}`]
     await compile({
         cwd: projectDir,
-        input: inputFilename,
+        input: daemonInputFilename,
         build: true,
-        output: path.resolve(projectDir, './dist/unpack-package', packageJson.appName),
+        output: daemonOutputFilename,
         targets: [{
             platform: os.platform(),
             arch: os.arch()
         }],
-        resources: [
-            'package.json',
-            'app/**/*',
-            'node_modules/**/*',
-            '!node_modules/**/*.node',
-            'node_modules/*.js',
-            'node_modules/*.cjs',
-            'node_modules/*.mjs',
-            'node_modules/**/*.json',
-            'node_modules/**/*.js',
-            'node_modules/**/*.wasm',
-            'node_modules/**/*.data'
-        ],
+        resources: resources,
         verbose: true,
         python: pythonBinPath,
-        make: [`-j${os.cpus().length}`]
+        make: makeArgs
+    })
+    await compile({
+        cwd: projectDir,
+        input: cliInputFilename,
+        build: true,
+        output: cliOutputFilename,
+        targets: [{
+            platform: os.platform(),
+            arch: os.arch()
+        }],
+        resources: resources,
+        verbose: true,
+        python: pythonBinPath,
+        make: makeArgs
     })
     const nativeAddons = await Glob(path.resolve(projectNodeModulesDir, '**/*.node'))
     const nativeAddonModuleNames = nativeAddons.map(nativeAddon => {

@@ -1,0 +1,26 @@
+{
+  "name": "cli",
+  "version": "0.0.1",
+  "description": "{$APP_DESC}",
+  "author": "{$APP_AUTHOR} <{$APP_AUTHOR}@email.com>",
+  "homepage": "NONE",
+  "license": "{$APP_LICENSE}",
+  "main": "build/CLIApp.js",
+  "scripts": {
+    "clean": "shx rm -rf ./build",
+    "build": "tsc",
+    "rebuild": "npm run clean && npm run build",
+    "test": "npm run rebuild && node ./build/tests/CLIApp.spec.js"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "electron-builder": "^24.13.3",
+    "eslint": "^8.56.0",
+    "http-proxy-middleware": "^3.0.0",
+    "reflect-metadata": "^0.2.2"
+  },
+  "dependencies": {
+  }
+}
