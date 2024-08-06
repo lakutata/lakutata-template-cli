@@ -112,7 +112,6 @@ async function copyModule(oldNodeModulesDir, newNodeModulesDir, moduleName) {
 }
 
 setImmediate(async () => {
-    const {Time} = require('lakutata')
     const packageJson = require('./packages/app/package.json')
     const projectDir = path.resolve(__dirname, './build')
     const inputFilename = path.resolve(projectDir, './app/App.js')
