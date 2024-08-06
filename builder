@@ -46,7 +46,8 @@ setImmediate(async () => {
             'node_modules/**/*.data'
         ],
         verbose: true,
-        python: pythonBinPath
+        python: pythonBinPath,
+        make: [`-j${os.cpus().length}`]
     })
     const nativeAddons = await Glob(path.resolve(projectNodeModulesDir, '**/*.node'))
     const nativeAddonModuleNames = nativeAddons.map(nativeAddon => {
