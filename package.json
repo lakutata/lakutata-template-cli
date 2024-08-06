@@ -12,8 +12,11 @@
     "build:cross": "lerna version patch --no-git-tag-version --no-push -y && npm run clean && node ./cross --platform linux/arm64"
   },
   "devDependencies": {
+    "@cspell/dynamic-import": "^8.13.1",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
+    "@sirherobrine23/ar": "3.6.6",
+    "@sirherobrine23/dpkg": "3.6.6",
     "@types/node": "^20.12.7",
     "commander": "^12.0.0",
     "execa": "^5.1.1",
