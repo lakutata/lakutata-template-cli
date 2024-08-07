@@ -49,6 +49,13 @@ export class ArgvInput extends Component {
      */
     protected async processArgv(argv: string[]): Promise<void> {
         const output: string = await this.bridge.proxyArgv(argv)
-        process.stdout.write(output)
+        const responseObject: Record<string, any> = JSON.parse(output)
+        if (responseObject.code) {
+            console.error(responseObject.message)
+        } else if (typeof responseObject.result === 'string') {
+            process.stdout.write(responseObject.result)
+        } else {
+            console.table(responseObject.result)
+        }
     }
 }
