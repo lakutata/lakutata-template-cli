@@ -17,7 +17,6 @@ import express, {
 import {Logger} from 'lakutata/com/logger'
 import path from 'node:path'
 import process from 'node:process'
-import {createProxyMiddleware} from 'http-proxy-middleware'
 
 /**
  * Setup Http entrypoint
@@ -32,6 +31,7 @@ export function SetupHttpEntrypoint(port: number): HTTPEntrypoint {
         if (process.env.MODE === 'production') {
             expressApp.use(express.static(path.resolve('@webroot')))
         } else {
+            const {createProxyMiddleware} = require('http-proxy-middleware')
             const {createServer} = require('web/webDevServer')
             const server = await createServer()
             expressApp.use('/', createProxyMiddleware({

@@ -12,6 +12,7 @@ import {Example} from '../entities/Example'
 import {Repository} from 'lakutata/orm'
 import {Logger} from 'lakutata/com/logger'
 import {SetupCLIEntrypoint} from './SetupCLIEntrypoint'
+import {BootNotification} from '../lib/BootNotification'
 
 export async function Config(): Promise<ApplicationOptions> {
     return {
@@ -42,6 +43,10 @@ export async function Config(): Promise<ApplicationOptions> {
         bootstrap: [
             'entrypoint',
             'db',
+            BootNotification,
+            // async (): Promise<void> => {
+            //     if (process.send) process.send('aaa')
+            // },
             async (app): Promise<void> => {
                 const log: Logger = await app.getObject('log')
                 const db: Database = await app.getObject('db')
