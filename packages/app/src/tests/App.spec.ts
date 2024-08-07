@@ -16,4 +16,4 @@ Application
     })
     .run(Config)
     .onFatalException((error: Error, logger: Logger): void => logger.error('A fatal error occurred in the program: %s', error.message))
-    .onUncaughtException((error: Error & any, logger: Logger): void => error.code === 'EPIPE' ? DevNull(error) : logger.error('UncaughtError occurred: %s', error.message))
+    .onUncaughtException((error: Error & any, logger: Logger): void => error.code === 'EPIPE' || error.code === 'RESPONSE_ALREADY_SENT' ? DevNull(error) : logger.error('UncaughtError occurred: %s', error.message))

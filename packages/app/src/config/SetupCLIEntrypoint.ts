@@ -7,12 +7,12 @@ import {
     EntrypointDestroyerRegistrar
 } from 'lakutata/com/entrypoint'
 import {Exception, JSONSchema, Module, Time} from 'lakutata'
-import {As, IsExists} from 'lakutata/helper'
+import {As, DevNull, IsExists} from 'lakutata/helper'
 import path from 'node:path'
 import {Server as IPCServer} from 'express-ipc'
 import {Logger} from 'lakutata/com/logger'
 import {mkdir} from 'node:fs/promises'
-import {Command} from 'commander'
+import {Command, OutputConfiguration} from 'commander'
 
 function formatResponse(data: any): string {
     let code: number | string = 0
@@ -40,20 +40,26 @@ export function SetupCLIEntrypoint(): CLIEntrypoint {
         const ipcServer: IPCServer = new IPCServer()
         ipcServer.get('/handshake', ({res}) => res.send({ts: Time.now()}))
         ipcServer.post('/argv', ({req, res}) => {
-            const argv: string[] = As<string[]>(req.body)
-            if (!argv.length) return res.send({output: formatResponse('')})
-            const CLIProgram: Command = new Command()
-            CLIProgram.exitOverride()
-            CLIProgram.configureOutput({
+            const sendResponse: (result: any) => void = (result: any): void => {
+                if (!res.isSent) res.send({output: formatResponse(result)})
+            }
+            const configureOutputObject: OutputConfiguration = {
                 writeOut(str: string): void {
-                    if (!res.isSent) res.send({output: formatResponse(str)})
+                    return sendResponse(str)
                 },
                 writeErr(str: string): void {
-                    if (!res.isSent) res.send({output: formatResponse(str)})
+                    return sendResponse(str)
                 }
-            })
+            }
+            const argv: string[] = As<string[]>(req.body)
+            if (!argv.length) return sendResponse('')
+            const CLIProgram: Command = new Command()
+            CLIProgram.exitOverride()
+            CLIProgram.configureOutput(configureOutputObject)
             cliMap.forEach((dtoJsonSchema: JSONSchema, command: string): void => {
                 const cmd: Command = new Command(command).description(dtoJsonSchema.description!)
+                cmd.exitOverride()
+                cmd.configureOutput(configureOutputObject)
                 for (const property in dtoJsonSchema.properties) {
                     const attr: JSONSchema = dtoJsonSchema.properties[property]
                     const optionsArgs: [string, string | undefined] = [`--${property} <${attr.type}>`, attr.description]
@@ -66,15 +72,13 @@ export function SetupCLIEntrypoint(): CLIEntrypoint {
                 }
                 cmd.action(async (args): Promise<any> => {
                     try {
-                        const result: any = await handler(new CLIContext({
+                        return sendResponse(await handler(new CLIContext({
                             command: command,
                             data: args
-                        }))
-                        if (!res.isSent) res.send({output: formatResponse(result)})
+                        })))
                     } catch (e) {
-                        if (!res.isSent) res.send({output: formatResponse(e)})
+                        return sendResponse(e)
                     }
-
                 })
                 CLIProgram.addCommand(cmd)
             })
