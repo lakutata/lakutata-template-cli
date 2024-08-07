@@ -11,6 +11,7 @@ import {tmpdir} from 'node:os'
 import {Example} from '../entities/Example'
 import {Repository} from 'lakutata/orm'
 import {Logger} from 'lakutata/com/logger'
+import {SetupCLIEntrypoint} from './SetupCLIEntrypoint'
 
 export async function Config(): Promise<ApplicationOptions> {
     return {
@@ -24,7 +25,8 @@ export async function Config(): Promise<ApplicationOptions> {
                     ExampleController
                 ],
                 service: SetupServiceEntrypoint(),
-                http: SetupHttpEntrypoint(process.env.MODE === 'production' ? 80 : 8080)
+                http: SetupHttpEntrypoint(process.env.MODE === 'production' ? 80 : 8080),
+                cli: SetupCLIEntrypoint()
             }),
             db: BuildDatabaseOptions({
                 type: 'sqlite',

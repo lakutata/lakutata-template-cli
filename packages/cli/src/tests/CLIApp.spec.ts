@@ -11,7 +11,7 @@ Application
         MODE: 'development'
     })
     .alias({
-        '@ipcPath': xpipe.eq(path.resolve(homedir(), './.pipe/', `${require('app/package.json').appId}.socket`))
+        '@ipcPath': xpipe.eq(path.resolve(homedir(), './.pipe/', `${require('app/package.json').appId}.dev.socket`))
     })
     .run(Config)
     .onFatalException((error: Error, logger: Logger): void => logger.error('A fatal error occurred in the program: %s', error.message))

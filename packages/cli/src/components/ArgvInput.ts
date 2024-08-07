@@ -1,12 +1,16 @@
-import {Component, DTO} from 'lakutata'
-import {Configurable} from 'lakutata/decorator/di'
+import {Application, Component, DTO} from 'lakutata'
+import {Configurable, Inject} from 'lakutata/decorator/di'
 import {createInterface, Interface as ReadlineInterface} from 'readline'
-import ipc from '@achrinza/node-ipc'
 import path from 'node:path'
-
-const {parseArgsStringToArgv} = require('string-argv')
+import {AppBridge} from './AppBridge'
 
 export class ArgvInput extends Component {
+
+    @Inject(Application)
+    protected readonly app: Application
+
+    @Inject('bridge')
+    protected readonly bridge: AppBridge
 
     /**
      * Whether enable STDIO hosting mode
@@ -20,8 +24,8 @@ export class ArgvInput extends Component {
      * @protected
      */
     protected async init(): Promise<void> {
-        console.log('@ipcPath:', path.resolve('@ipcPath'))
         if (this.stdioHosting) {
+            const {parseArgsStringToArgv} = require('string-argv')
             const readline: ReadlineInterface = createInterface({
                 input: process.stdin,
                 output: process.stdout
@@ -34,6 +38,7 @@ export class ArgvInput extends Component {
             })
         } else {
             await this.processArgv(process.argv)
+            this.app.exit(0)
         }
     }
 
@@ -42,8 +47,8 @@ export class ArgvInput extends Component {
      * @param argv
      * @protected
      */
-    protected async processArgv(argv: string[]): Promise<string> {
-        //TODO
-        return 'ok'
+    protected async processArgv(argv: string[]): Promise<void> {
+        const output: string = await this.bridge.proxyArgv(argv)
+        process.stdout.write(output)
     }
 }
