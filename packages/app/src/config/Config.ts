@@ -1,4 +1,4 @@
-import {ApplicationOptions, Time} from 'lakutata'
+import {ApplicationOptions} from 'lakutata'
 import * as process from 'node:process'
 import {BuildEntrypoints} from 'lakutata/com/entrypoint'
 import {SetupServiceEntrypoint} from './SetupServiceEntrypoint'
