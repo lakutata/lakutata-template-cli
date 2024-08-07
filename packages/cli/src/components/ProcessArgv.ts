@@ -3,7 +3,7 @@ import {Configurable, Inject} from 'lakutata/decorator/di'
 import {createInterface, Interface as ReadlineInterface} from 'readline'
 import {AppBridge} from './AppBridge'
 
-export class ArgvInput extends Component {
+export class ProcessArgv extends Component {
 
     @Inject(Application)
     protected readonly app: Application
@@ -12,7 +12,7 @@ export class ArgvInput extends Component {
     protected readonly bridge: AppBridge
 
     /**
-     * Whether enable STDIO hosting mode
+     * Whether enable stdio hosting mode
      * @protected
      */
     @Configurable(DTO.Boolean().optional().default(false))
@@ -32,14 +32,14 @@ export class ArgvInput extends Component {
             readline.on('line', async (line: string): Promise<void> => {
                 const argv: string[] = parseArgsStringToArgv(line)
                 readline.pause()
-                await this.processArgv(argv)
+                await this.process(argv)
                 readline.resume()
             })
         } else {
             const origArgv: string[] = process.argv
             origArgv.shift()
             origArgv.shift()
-            await this.processArgv(origArgv)
+            await this.process(origArgv)
             this.app.exit(0)
         }
     }
@@ -49,7 +49,7 @@ export class ArgvInput extends Component {
      * @param argv
      * @protected
      */
-    protected async processArgv(argv: string[]): Promise<void> {
+    protected async process(argv: string[]): Promise<void> {
         const output: string = await this.bridge.proxyArgv(argv)
         const responseObject: Record<string, any> = JSON.parse(output)
         if (responseObject.code) {

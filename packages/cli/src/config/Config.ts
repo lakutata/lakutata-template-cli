@@ -1,7 +1,7 @@
 import {ApplicationOptions} from 'lakutata'
 import * as process from 'node:process'
 import packageJson from '../../package.json'
-import {ArgvInput} from '../components/ArgvInput'
+import {ProcessArgv} from '../components/ProcessArgv'
 import {AppBridge} from '../components/AppBridge'
 
 export async function Config(): Promise<ApplicationOptions> {
@@ -14,8 +14,8 @@ export async function Config(): Promise<ApplicationOptions> {
             bridge: {
                 class: AppBridge
             },
-            argvInp: {
-                class: ArgvInput,
+            processArgv: {
+                class: ProcessArgv,
                 stdioHosting: true
             }
         },
@@ -23,7 +23,7 @@ export async function Config(): Promise<ApplicationOptions> {
             anonymous: []
         },
         bootstrap: [
-            'argvInp'
+            'processArgv'
         ]
     }
 }
