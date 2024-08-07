@@ -5,7 +5,6 @@ import {AppBridge} from './AppBridge'
 import {ChildProcess, fork} from 'node:child_process'
 import path from 'node:path'
 import process from 'node:process'
-import {Delay} from 'lakutata/helper'
 
 export class ProcessArgv extends Component {
 
