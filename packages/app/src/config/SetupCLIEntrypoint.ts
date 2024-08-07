@@ -57,6 +57,11 @@ export function SetupCLIEntrypoint(): CLIEntrypoint {
             const CLIProgram: Command = new Command()
             CLIProgram.exitOverride()
             CLIProgram.configureOutput(configureOutputObject)
+
+            // CLIProgram.action(()=>{
+            //     console.log('!!!@##!@#@')
+            // })
+
             cliMap.forEach((dtoJsonSchema: JSONSchema, command: string): void => {
                 const cmd: Command = new Command(command).description(dtoJsonSchema.description!)
                 cmd.exitOverride()
@@ -83,6 +88,16 @@ export function SetupCLIEntrypoint(): CLIEntrypoint {
                 })
                 CLIProgram.addCommand(cmd)
             })
+            CLIProgram.addCommand(
+                new Command('version')
+                    .description('print version info')
+                    .exitOverride()
+                    .allowExcessArguments(true)
+                    .allowUnknownOption(true)
+                    .action((args) => {
+                        return sendResponse(require('app/package.json').version)
+                    })
+            )
             CLIProgram.parse(argv, {from: argvFrom})
         })
         registerDestroy(async (): Promise<void> => await new Promise<void>((resolve, reject) => ipcServer.close((err?: Error | null | undefined): void => err ? reject(err) : resolve())))

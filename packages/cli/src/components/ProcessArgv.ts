@@ -70,7 +70,7 @@ export class ProcessArgv extends Component {
         if (responseObject.code) {
             console.error(responseObject.message)
         } else if (typeof responseObject.result === 'string') {
-            process.stdout.write(responseObject.result)
+            if (responseObject.result) console.log(responseObject.result)
         } else {
             console.table(responseObject.result)
         }
