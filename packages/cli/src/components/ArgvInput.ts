@@ -36,7 +36,10 @@ export class ArgvInput extends Component {
                 readline.resume()
             })
         } else {
-            await this.processArgv(process.argv)
+            const origArgv: string[] = process.argv
+            origArgv.shift()
+            origArgv.shift()
+            await this.processArgv(origArgv)
             this.app.exit(0)
         }
     }

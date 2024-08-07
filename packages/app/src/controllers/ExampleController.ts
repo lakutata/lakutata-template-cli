@@ -10,7 +10,9 @@ export class ExampleController extends Controller {
      */
     @ServiceAction({ctrl: 'example', act: 'test'}, TestOptions)
     @CLIAction('test', TestOptions.description('this is test command'))
-    public async test(inp: ActionPattern<TestOptions>): Promise<number> {
-        return inp.timestamp
+    public async test(inp: ActionPattern<TestOptions>): Promise<any> {
+        return {
+            timestamp: inp.timestamp
+        }
     }
 }
