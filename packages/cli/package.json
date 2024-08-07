@@ -22,5 +22,6 @@
     "reflect-metadata": "^0.2.2"
   },
   "dependencies": {
+    "string-argv": "^0.3.2"
   }
 }

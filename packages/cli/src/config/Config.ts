@@ -1,7 +1,7 @@
 import {ApplicationOptions} from 'lakutata'
 import * as process from 'node:process'
-import {BuildEntrypoints} from 'lakutata/com/entrypoint'
 import packageJson from '../../package.json'
+import {ArgvInput} from '../components/ArgvInput'
 
 export async function Config(): Promise<ApplicationOptions> {
     return {
@@ -10,16 +10,16 @@ export async function Config(): Promise<ApplicationOptions> {
         timezone: 'auto',
         mode: <'development' | 'production'>process.env.MODE,
         components: {
-            entrypoint: BuildEntrypoints({
-                controllers: []
-                // cli: SetupCLIEntrypoint()
-            })
+            argvInp: {
+                class: ArgvInput,
+                stdioHosting: true
+            }
         },
         objects: {
             anonymous: []
         },
         bootstrap: [
-            'entrypoint'
+            'argvInp'
         ]
     }
 }
