@@ -13,22 +13,10 @@ import {Server as IPCServer} from 'express-ipc'
 import {Logger} from 'lakutata/com/logger'
 import {mkdir} from 'node:fs/promises'
 import {Command, OutputConfiguration} from 'commander'
+import {FormatEntrypointResponse} from '../lib/FormatEntrypointResponse'
 
 function formatResponse(data: any): string {
-    let code: number | string = 0
-    let message: string = ''
-    if (data instanceof Exception) {
-        code = data.errno
-        message = data.message
-    } else if (data instanceof Error) {
-        code = -1
-        message = data.message
-    }
-    return JSON.stringify({
-        code: code,
-        result: code ? null : data,
-        message: message
-    })
+    return JSON.stringify(FormatEntrypointResponse(data))
 }
 
 export function SetupCLIEntrypoint(): CLIEntrypoint {
@@ -57,11 +45,6 @@ export function SetupCLIEntrypoint(): CLIEntrypoint {
             const CLIProgram: Command = new Command()
             CLIProgram.exitOverride()
             CLIProgram.configureOutput(configureOutputObject)
-
-            // CLIProgram.action(()=>{
-            //     console.log('!!!@##!@#@')
-            // })
-
             cliMap.forEach((dtoJsonSchema: JSONSchema, command: string): void => {
                 const cmd: Command = new Command(command).description(dtoJsonSchema.description!)
                 cmd.exitOverride()

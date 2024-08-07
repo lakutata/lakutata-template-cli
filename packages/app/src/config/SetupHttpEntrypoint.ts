@@ -17,6 +17,8 @@ import express, {
 import {Logger} from 'lakutata/com/logger'
 import path from 'node:path'
 import process from 'node:process'
+import bodyParser from 'body-parser'
+import {FormatEntrypointResponse} from '../lib/FormatEntrypointResponse'
 
 /**
  * Setup Http entrypoint
@@ -28,6 +30,27 @@ export function SetupHttpEntrypoint(port: number): HTTPEntrypoint {
         const httpServer: HttpServer = createServer()
         const expressApp: ExpressApp = express()
         httpServer.on('request', expressApp)
+        routeMap.forEach((methods: Set<string>, route: string) => {
+            expressApp
+                .use(bodyParser.json({limit: Infinity}))
+                .use(bodyParser.urlencoded({extended: false, limit: Infinity}))
+                .post(route, async (req: ExpressRequest, res: ExpressResponse): Promise<void> => {
+                    try {
+                        res.send(FormatEntrypointResponse(await handler(new HTTPContext({
+                            data: {
+                                ...req.query,
+                                ...req.body
+                            },
+                            route: route,
+                            method: req.method.toLowerCase(),
+                            request: req,
+                            response: res
+                        }))))
+                    } catch (e) {
+                        res.send(FormatEntrypointResponse(e))
+                    }
+                })
+        })
         if (process.env.MODE === 'production') {
             expressApp.use(express.static(path.resolve('@webroot')))
         } else {

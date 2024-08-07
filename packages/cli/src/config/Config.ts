@@ -16,7 +16,7 @@ export async function Config(): Promise<ApplicationOptions> {
             },
             processArgv: {
                 class: ProcessArgv,
-                stdioHosting: false
+                stdioHosting: true
             }
         },
         objects: {
