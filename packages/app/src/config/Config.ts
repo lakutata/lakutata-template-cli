@@ -5,14 +5,13 @@ import {SetupServiceEntrypoint} from './SetupServiceEntrypoint'
 import packageJson from '../../package.json'
 import {ExampleController} from '../controllers/ExampleController'
 import {SetupHttpEntrypoint} from './SetupHttpEntrypoint'
-import {BuildDatabaseOptions, Database} from 'lakutata/com/database'
+import {BuildDatabaseOptions} from 'lakutata/com/database'
 import path from 'node:path'
 import {tmpdir} from 'node:os'
 import {Example} from '../entities/Example'
-import {Repository} from 'lakutata/orm'
-import {Logger} from 'lakutata/com/logger'
 import {SetupCLIEntrypoint} from './SetupCLIEntrypoint'
 import {BootNotification} from '../lib/BootNotification'
+import {ExampleProvider} from '../providers/ExampleProvider'
 
 export async function Config(): Promise<ApplicationOptions> {
     return {
@@ -38,23 +37,12 @@ export async function Config(): Promise<ApplicationOptions> {
             })
         },
         objects: {
-            anonymous: []
+            anonymous: [ExampleProvider]
         },
         bootstrap: [
             'entrypoint',
             'db',
-            BootNotification,
-            // async (): Promise<void> => {
-            //     if (process.send) process.send('aaa')
-            // },
-            async (app): Promise<void> => {
-                const log: Logger = await app.getObject('log')
-                const db: Database = await app.getObject('db')
-                const exampleRepo: Repository<Example> = db.getRepository(Example)
-                const example = new Example()
-                example.timestamp = Time.now()
-                log.info(await exampleRepo.save(example))
-            }
+            BootNotification
         ]
     }
 }
