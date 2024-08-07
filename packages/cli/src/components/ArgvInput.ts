@@ -1,7 +1,6 @@
 import {Application, Component, DTO} from 'lakutata'
 import {Configurable, Inject} from 'lakutata/decorator/di'
 import {createInterface, Interface as ReadlineInterface} from 'readline'
-import path from 'node:path'
 import {AppBridge} from './AppBridge'
 
 export class ArgvInput extends Component {
