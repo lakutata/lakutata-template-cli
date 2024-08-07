@@ -12,6 +12,7 @@ import {Example} from '../entities/Example'
 import {SetupCLIEntrypoint} from './SetupCLIEntrypoint'
 import {BootNotification} from '../lib/BootNotification'
 import {ExampleProvider} from '../providers/ExampleProvider'
+import {StateManager} from '../providers/StateManager'
 
 export async function Config(): Promise<ApplicationOptions> {
     return {
@@ -35,6 +36,11 @@ export async function Config(): Promise<ApplicationOptions> {
                 entities: [Example],
                 synchronize: true
             })
+        },
+        providers: {
+            state: {
+                class: StateManager
+            }
         },
         objects: {
             anonymous: [ExampleProvider]

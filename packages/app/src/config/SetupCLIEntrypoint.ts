@@ -7,7 +7,7 @@ import {
     EntrypointDestroyerRegistrar
 } from 'lakutata/com/entrypoint'
 import {JSONSchema, Module, Time} from 'lakutata'
-import {As, IsExists} from 'lakutata/helper'
+import {As, DevNull, IsExists} from 'lakutata/helper'
 import path from 'node:path'
 import {Server as IPCServer} from 'express-ipc'
 import {Logger} from 'lakutata/com/logger'
@@ -83,7 +83,7 @@ export function SetupCLIEntrypoint(): CLIEntrypoint {
             )
             CLIProgram.parse(argv, {from: argvFrom})
         })
-        registerDestroy(async (): Promise<void> => await new Promise<void>((resolve, reject) => ipcServer.close((err?: Error | null | undefined): void => err ? reject(err) : resolve())))
+        registerDestroy(async (): Promise<void> => await new Promise<void>((resolve) => ipcServer.close((err?: Error | null | undefined): void => resolve(DevNull(err)))))
         await new Promise<void>((resolve, reject) => {
             try {
                 ipcServer.listen({
