@@ -6,7 +6,7 @@ import {
     CLIMap,
     EntrypointDestroyerRegistrar
 } from 'lakutata/com/entrypoint'
-import {Exception, JSONSchema, Module, Time} from 'lakutata'
+import {JSONSchema, Module, Time} from 'lakutata'
 import {As, IsExists} from 'lakutata/helper'
 import path from 'node:path'
 import {Server as IPCServer} from 'express-ipc'
