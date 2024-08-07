@@ -7,7 +7,7 @@ import {
     EntrypointDestroyerRegistrar
 } from 'lakutata/com/entrypoint'
 import {Exception, JSONSchema, Module, Time} from 'lakutata'
-import {As, DevNull, IsExists} from 'lakutata/helper'
+import {As, IsExists} from 'lakutata/helper'
 import path from 'node:path'
 import {Server as IPCServer} from 'express-ipc'
 import {Logger} from 'lakutata/com/logger'
