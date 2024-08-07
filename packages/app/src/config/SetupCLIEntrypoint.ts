@@ -52,6 +52,7 @@ export function SetupCLIEntrypoint(): CLIEntrypoint {
                 }
             }
             const argv: string[] = As<string[]>(req.body)
+            const argvFrom: 'node' | 'electron' | 'user' = req.query.from
             if (!argv.length) return sendResponse('')
             const CLIProgram: Command = new Command()
             CLIProgram.exitOverride()
@@ -82,7 +83,7 @@ export function SetupCLIEntrypoint(): CLIEntrypoint {
                 })
                 CLIProgram.addCommand(cmd)
             })
-            CLIProgram.parse(argv, {from: 'user'})
+            CLIProgram.parse(argv, {from: argvFrom})
         })
         registerDestroy(async (): Promise<void> => await new Promise<void>((resolve, reject) => ipcServer.close((err?: Error | null | undefined): void => err ? reject(err) : resolve())))
         await new Promise<void>((resolve, reject) => {

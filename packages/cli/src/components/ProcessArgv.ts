@@ -35,7 +35,7 @@ export class ProcessArgv extends Component {
             readline.on('line', async (line: string): Promise<void> => {
                 const argv: string[] = parseArgsStringToArgv(line)
                 readline.pause()
-                await this.process(argv)
+                await this.process(argv, 'user')
                 readline.resume()
             })
         } else {
@@ -51,9 +51,8 @@ export class ProcessArgv extends Component {
             })
             this.bridge = await this.app.getObject<AppBridge>('bridge')
             const origArgv: string[] = process.argv
-            origArgv.shift()//shift first arg
-            origArgv.shift()//shift second arg
-            await this.process(origArgv)
+            origArgv[1] = path.resolve(path.dirname(origArgv[1]), `${require('app/package.json').appName}.app`)
+            await this.process(origArgv, 'node')
             appProcess!.kill()
             this.app.exit(0)
         }
@@ -62,10 +61,11 @@ export class ProcessArgv extends Component {
     /**
      * Process argv
      * @param argv
+     * @param from
      * @protected
      */
-    protected async process(argv: string[]): Promise<void> {
-        const output: string = await this.bridge.proxyArgv(argv)
+    protected async process(argv: string[], from: string): Promise<void> {
+        const output: string = await this.bridge.proxyArgv(argv, from)
         const responseObject: Record<string, any> = JSON.parse(output)
         if (responseObject.code) {
             console.error(responseObject.message)

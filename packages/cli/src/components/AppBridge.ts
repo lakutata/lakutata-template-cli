@@ -38,9 +38,10 @@ export class AppBridge extends Component {
     /**
      * Proxy argv to App (IPC Server)
      * @param argv
+     * @param from
      */
-    public async proxyArgv(argv: string[]): Promise<string> {
-        const response: GeneralResponsePayload = await this.client.post('/argv', {body: argv})
+    public async proxyArgv(argv: string[], from: string): Promise<string> {
+        const response: GeneralResponsePayload = await this.client.post('/argv', {body: argv, query: {from: from}})
         return response.body.output
     }
 
