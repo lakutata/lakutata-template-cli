@@ -30,6 +30,8 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "lakutata": "^2.0.11"
+    "@achrinza/node-ipc": "^10.1.11",
+    "lakutata": "^2.0.11",
+    "xpipe": "^1.0.7"
   }
 }
